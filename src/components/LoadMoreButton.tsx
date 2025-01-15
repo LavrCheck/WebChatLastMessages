@@ -1,12 +1,14 @@
 import './LoadMoreButton.sass'
 
 export const LoadMoreButton = ({
-    onClick
+    onClick,
+    disabled
 }: {
     onClick: () => void,
+    disabled?: boolean
 }) => {
     return <>
-        <button className={'LoadMoreButton mt-3 '} onClick={onClick}>
+        <button className={'LoadMoreButton'} disabled={disabled} onClick={onClick}>
             Загрузить еще
         </button>
     </>

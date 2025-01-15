@@ -19,7 +19,7 @@ export class WebSocketConnector {
         string,
         [(payload: any) => void, (payload: any) => void]
     >;
-    private connectedResolve: Promise<void>;
+    private readonly connectedResolve: Promise<void>;
     private pingIntervalTimer: NodeJS.Timer | undefined;
 
     private static _instance: WebSocketConnector | undefined;
@@ -32,6 +32,7 @@ export class WebSocketConnector {
             WebSocketConnector._instance = undefined;
 
             if (this.pingIntervalTimer) {
+                //@ts-ignore
                 clearInterval(this.pingIntervalTimer);
             }
 
