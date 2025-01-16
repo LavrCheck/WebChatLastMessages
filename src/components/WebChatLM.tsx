@@ -118,7 +118,7 @@ export const WebChatLM = ({
                     <LoadMoreButton onClick={getMessages} disabled={!isHasMoreMessages}/>
                     {groupedMessages?.map(([title, messages], i) => (<MessagesGroup key={i} title={title}>
                         {sortBy(messages, ["dateSortable"]).map((message) => (
-                            <MessageCard key={message.id} message={message}/>))}
+                            <MessageCard userId={userId} key={message.id} message={message}/>))}
                     </MessagesGroup>))}
                 </div>
             </div>

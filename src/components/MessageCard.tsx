@@ -3,11 +3,12 @@ import {Icon} from "./Icon.tsx";
 import {useEffect, useState} from "react";
 import {AttachmentType, IAttachment, IMessage} from "../../types.ts";
 import moment from 'moment-mini'
-import {TIME_SHORT_FMT, userId} from "../../variables.ts";
+import {TIME_SHORT_FMT} from "../../variables.ts";
 import {groupBy} from "lodash";
 
 type MessageCardProps = {
     message: IMessage;
+    userId: string;
 };
 
 
@@ -18,7 +19,7 @@ export const timeFormat = (time: string): string => {
     return moment(time).format(TIME_SHORT_FMT);
 };
 
-export const MessageCard = ({message}: MessageCardProps) => {
+export const MessageCard = ({message, userId}: MessageCardProps) => {
     const [files, setFiles] = useState<IAttachment[] | undefined>(undefined);
     const [images, setImages] = useState<IAttachment[] | undefined>(undefined);
 
