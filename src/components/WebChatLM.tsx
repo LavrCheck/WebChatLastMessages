@@ -56,7 +56,7 @@ export const WebChatLM = ({
                 type: 'GET_MESSAGES', channelId: channelId, offset: offset, limit: limit
 
             })
-            removeDuplicatesOfTopMonthAndSafe(resp.data.items)
+            removeDuplicatesOfTopMonthAndSafe(resp.payload.items)
 
             const newOffset = offset + limit
             if (resp.payload.count <= newOffset) {
