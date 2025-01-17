@@ -1,13 +1,12 @@
 import './MediaViewModal.sass'
 import close from '../assets/close.svg'
-import {makeUrl} from "./MessageCard.tsx";
-import {isVideo} from "./utilities/chatUtilities.ts";
+import {isVideo, makeUrl} from "./utilities/chatUtilities.ts";
 
 
 export const MediaViewModal = ({
     isModalVisible, data, onClose,
 }: {
-    isModalVisible: boolean, data: any, onClose: () => void,
+    isModalVisible: boolean, data: string, onClose: () => void,
 }) => {
 
     if (!isModalVisible) {

@@ -28,7 +28,7 @@ export const WebChatLM = ({
     const [isHasMoreMessages, setIsHasMoreMessages] = useState<boolean>(true)
 
     const [isMediaModalVisible, setIsMediaModalVisible] = useState<boolean>(false)
-    const [dataModal, setDataModal] = useState<any>([])
+    const [dataModal, setDataModal] = useState<string>('')
 
     const wsRef = useRef<WebSocketConnector>();
 

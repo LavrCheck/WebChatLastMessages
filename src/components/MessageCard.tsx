@@ -5,16 +5,13 @@ import {AttachmentType, IAttachment, IMessage} from "../../types.ts";
 import moment from 'moment-mini'
 import {TIME_SHORT_FMT} from "../../variables.ts";
 import {groupBy} from "lodash";
-import {isVideo} from "./utilities/chatUtilities.ts";
+import {isVideo, makeUrl} from "./utilities/chatUtilities.ts";
 import playVideo from '../assets/playVideo.svg'
 
 type MessageCardProps = {
     message: IMessage; userId: string; onClickAttachment: (x: any) => void;
 };
 
-
-export const httpsHost = 'https://xn--2-stbc.xn----7sbecl2dbcfoo.xn--p1ai';
-export const makeUrl = (url: string) => url.indexOf('https:') !== -1 ? url : url.indexOf('http:') !== -1 ? url.replace('http:', 'https:') : `${httpsHost}${url}`;
 
 export const timeFormat = (time: string): string => {
     return moment(time).format(TIME_SHORT_FMT);
@@ -71,20 +68,22 @@ export const MessageCard = ({message, userId, onClickAttachment}: MessageCardPro
         </div>}
 
         {images && images.length && <div className={classNames({
-            "flex flex-wrap gap-[2px]": true,
+            "flex gap-[5px] flex-wrap items-end": true,
             "self-start": userId && +userId !== message.sender.id,
             "self-end justify-end": userId && +userId === message.sender.id,
         })}>
             {images.map((item, idx) => (<div key={idx} className="overflow-hidden rounded-md bg-[#00000010] relative">
                 {isVideo(item.file) ? <div onClick={() => onClickAttachment(item.file)}>
-                    <video className="object-contain max-h-[200px] cursor-pointer" src={item.file}/>
-                    <img alt='play' src={playVideo} className={'absolute inset-0 m-auto max-h-[50%] max-w-[80%] cursor-pointer'}/>
-                </div> : <img className="object-contain max-w-[200px] h-full cursor-pointer" src={makeUrl(item.file)}
+                    <video className="max-h-[200px] max-w-[200px] cursor-pointer" src={item.file}/>
+                    <img alt='play' src={playVideo}
+                        className={'absolute inset-0 m-auto w-[50px] cursor-pointer'}/>
+                </div> : <img className=" max-w-[200px] cursor-pointer" src={makeUrl(item.file)}
                     onClick={() => onClickAttachment(item.file)} alt=""/>}
 
                 <div
-                    className="absolute bottom-[10px] right-[10px] bg-[#FFFFFF99] text-[#4A4A4A] px-[10px] py-[4px] rounded-md">
-                    {timeFormat(message.createDate)}
+                    className="absolute bottom-[10px] right-[10px] px-[10px] py-[4px] ">
+                    <div className={'absolute inset-0 bg-[#FFFFFF] rounded-md opacity-80'}></div>
+                    <div className={'text-[#4A4A4A] relative'}>{timeFormat(message.createDate)}</div>
                 </div>
             </div>))}
         </div>}
