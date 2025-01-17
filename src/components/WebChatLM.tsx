@@ -7,17 +7,19 @@ import {entries, fromPairs, groupBy, keys, sortBy} from "lodash";
 import moment from "moment-mini";
 import {IMessage} from "../../types.ts";
 import {LoadMoreButton} from "./LoadMoreButton.tsx";
+import {MediaViewModal} from "./MediaViewModal.tsx";
+import {ChangeChannelHandel} from "./ChangeChannelHandel.tsx";
 
 
 export const WebChatLM = ({
     userId = "237503",
     userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNTQyNDl9.yVqKPKlGWpYkTKFOTADEf_kzihpgSVBpMz22Aul2osM",
-    channelId = 9
 }: {
     userId?: string // change declaration
-    userToken?: string
-    channelId?: number
+    userToken?: string // change declaration
 }) => {
+
+    const [channelId, setChannelId] = useState<number>(9) // change declaration
 
     const [groupedMessages, setGroupedMessages] = useState<Array<[string, IMessage[]]>>([])
 
@@ -25,22 +27,25 @@ export const WebChatLM = ({
     const [offset, setOffset] = useState<number>(limit)
     const [isHasMoreMessages, setIsHasMoreMessages] = useState<boolean>(true)
 
+    const [isMediaModalVisible, setIsMediaModalVisible] = useState<boolean>(false)
+    const [dataModal, setDataModal] = useState<any>([])
+
     const wsRef = useRef<WebSocketConnector>();
 
 
     const initWS = async () => {
         wsRef.current = WebSocketConnector.getInstance({
-            onClose: () => {},
-            onMessage: async (payload) => {
-                    if (payload.type === 'NEW_MESSAGE') {
-                        const resp = await wsRef?.current?.get<any>({
-                            type: 'GET_MESSAGES', channelId: channelId, offset: 0, limit: 1
-                        })
+            onClose: () => {
+            }, onMessage: async (payload) => {
+                if (payload.type === 'NEW_MESSAGE') {
+                    const resp = await wsRef?.current?.get<any>({
+                        type: 'GET_MESSAGES', channelId: channelId, offset: 0, limit: 1
+                    })
 
-                        removeDuplicatesOfBottomMonthAndSafe(resp.payload.items)
-                    }
-                },
-            onConnect: () => {}
+                    removeDuplicatesOfBottomMonthAndSafe(resp.payload.items)
+                }
+            }, onConnect: () => {
+            }
         })
 
         await wsRef.current.connected()
@@ -108,20 +113,41 @@ export const WebChatLM = ({
                 type: 'GET_MESSAGES', channelId: channelId, offset: 0, limit: limit
             })
             setGroupedMessages(groupMessages(resp.payload.items))
+            resp.payload.count <= offset && setIsHasMoreMessages(false)
         })()
     }, [])
 
     return <>
+        {/* ↓↓↓ Delete me ↓↓↓↓ */}
         <div className="w-screen h-screen flex justify-center items-center">
-            <div className="w-[1000px] h-[1000px] "> {/* <--- Delete me ↑↑↑ */}
+            <div className="w-[1000px] h-[1000px] ">
+                <ChangeChannelHandel channelId={String(channelId)} onChange={async (cI) => {
+                    if (cI) {
+                        setChannelId(Number(cI))
+                        const resp = await wsRef?.current?.get<any>({
+                            type: 'GET_MESSAGES', channelId: cI, offset: 0, limit: limit
+                        })
+                        setGroupedMessages(groupMessages(resp.payload.items))
+                        setOffset(limit)
+                        setIsHasMoreMessages(resp.payload.count > limit)
+                    }
+                }}/>
+                {/* ↑↑↑ Delete me ↑↑↑ */}
                 <div className={'bg-[#EEEEEE] p-4 w-full h-full overflow-x-auto'}>
                     <LoadMoreButton onClick={getMessages} disabled={!isHasMoreMessages}/>
                     {groupedMessages?.map(([title, messages], i) => (<MessagesGroup key={i} title={title}>
                         {sortBy(messages, ["dateSortable"]).map((message) => (
-                            <MessageCard userId={userId} key={message.id} message={message}/>))}
+                            <MessageCard userId={userId} key={message.id} message={message}
+                                onClickAttachment={(attachmentUrl: any) => {
+                                    setDataModal(attachmentUrl)
+                                    setIsMediaModalVisible(true)
+                                }}/>))}
                     </MessagesGroup>))}
                 </div>
             </div>
         </div>
+
+        <MediaViewModal isModalVisible={isMediaModalVisible} onClose={() => setIsMediaModalVisible(false)}
+            data={dataModal}/>
     </>
 }

@@ -1,0 +1,33 @@
+.MediaViewModal
+  position: fixed
+  z-index: 10
+  inset: 0
+  display: flex
+  justify-content: center
+  align-items: center
+
+  .overlay
+    position: absolute
+    inset: 0
+    background-color: #000
+    opacity: 0.8
+
+  .close-icon
+    position: absolute
+    height: 30px
+    aspect-ratio: 1/1
+    top: 20px
+    right: 20px
+    cursor: pointer
+    opacity: 0.8
+    transition: opacity 0.1s ease-in
+
+    &:hover
+      opacity: 1
+
+  .content
+    position: relative
+
+    img, video
+      max-width: 80vw
+      max-height: 80vh
