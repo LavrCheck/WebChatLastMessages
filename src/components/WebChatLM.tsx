@@ -8,18 +8,19 @@ import moment from "moment-mini";
 import {IMessage} from "../../types.ts";
 import {LoadMoreButton} from "./LoadMoreButton.tsx";
 import {MediaViewModal} from "./MediaViewModal.tsx";
-import {ChangeChannelHandel} from "./ChangeChannelHandel.tsx";
 
 
 export const WebChatLM = ({
     userId = "237503",
     userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNTQyNDl9.yVqKPKlGWpYkTKFOTADEf_kzihpgSVBpMz22Aul2osM",
+    channelId = '9'
+
 }: {
     userId?: string // change declaration
-    userToken?: string // change declaration
+    userToken?: string
+    channelId?: string
 }) => {
 
-    const [channelId, setChannelId] = useState<number>(9) // change declaration
 
     const [groupedMessages, setGroupedMessages] = useState<Array<[string, IMessage[]]>>([])
 
@@ -120,18 +121,7 @@ export const WebChatLM = ({
     return <>
         {/* ↓↓↓ Delete me ↓↓↓↓ */}
         <div className="w-screen h-screen flex justify-center items-center">
-            <div className="w-[1000px] h-[1000px] ">
-                <ChangeChannelHandel channelId={String(channelId)} onChange={async (cI) => {
-                    if (cI) {
-                        setChannelId(Number(cI))
-                        const resp = await wsRef?.current?.get<any>({
-                            type: 'GET_MESSAGES', channelId: cI, offset: 0, limit: limit
-                        })
-                        setGroupedMessages(groupMessages(resp.payload.items))
-                        setOffset(limit)
-                        setIsHasMoreMessages(resp.payload.count > limit)
-                    }
-                }}/>
+            <div className="w-[1000px] h-[800px] ">
                 {/* ↑↑↑ Delete me ↑↑↑ */}
                 <div className={'bg-[#EEEEEE] p-4 w-full h-full overflow-x-auto'}>
                     <LoadMoreButton onClick={getMessages} disabled={!isHasMoreMessages}/>
