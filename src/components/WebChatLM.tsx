@@ -127,7 +127,7 @@ export const WebChatLM = ({
                     <LoadMoreButton onClick={getMessages} disabled={!isHasMoreMessages}/>
                     {groupedMessages?.map(([title, messages], i) => (<MessagesGroup key={i} title={title}>
                         {sortBy(messages, ["dateSortable"]).map((message) => (
-                            <MessageCard userId={userId} key={message.id} message={message}
+                            <MessageCard key={message.id} message={message}
                                 onClickAttachment={(attachmentUrl: any) => {
                                     setDataModal(attachmentUrl)
                                     setIsMediaModalVisible(true)

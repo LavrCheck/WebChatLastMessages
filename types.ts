@@ -11,6 +11,7 @@ export interface IAttachment {
     file: string;
     name: string;
     type: AttachmentType;
+    getFile: string
 }
 
 export interface IUser {
@@ -18,6 +19,8 @@ export interface IUser {
     firstName: string;
     id: number;
     lastName: string;
+    isExpert: boolean;
+    isStaff: boolean;
 }
 
 export interface IMessage {
